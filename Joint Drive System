@@ -1,0 +1,3 @@
+Each major joint uses the same drive mechanism.
+I spent the first 2 weeks of summer working on a design for a cycloidal gearbox that is driven by a nema-17 stepper motor. 
+The gearbox is a 25:1 reduction, using 3d printed gears and housings. It uses bearings on the two outsid econnectors, and bearings inside the center of each gear, and 8 3mm metal rods to act as the pivots. It is not currently 100% complete.
