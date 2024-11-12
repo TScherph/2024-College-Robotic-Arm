@@ -1,0 +1,100 @@
+
+#include "BluetoothSerial.h"
+
+String device_name = "DFA-C1";
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+#if !defined(CONFIG_BT_SPP_ENABLED)
+#error Serial Port Profile for Bluetooth is not available or not enabled. It is only available for the ESP32 chip.
+#endif
+
+BluetoothSerial SerialBT;
+
+
+
+const int DIR = 12;
+const int STEP = 14;
+const int DIR2 = 27;
+const int STEP2 = 26;
+const int steps_per_rev = 200;
+char val = ' ';
+void setup() {
+  Serial.begin(115200);
+  SerialBT.begin(device_name);
+  pinMode(STEP, OUTPUT);
+  pinMode(DIR, OUTPUT);
+  pinMode(STEP2,OUTPUT);
+  pinMode(DIR2,OUTPUT);
+}
+void clockwise() {
+  for (int i = 0; i < steps_per_rev; i++) {
+    digitalWrite(DIR, HIGH);
+    digitalWrite(STEP, HIGH);
+    delayMicroseconds(1500);
+    digitalWrite(STEP, LOW);
+    delayMicroseconds(500);
+  }
+}
+void counterClockwise() {
+  for (int i = 0; i < steps_per_rev; i++) {
+    digitalWrite(DIR, LOW);
+    digitalWrite(STEP, HIGH);
+    delayMicroseconds(1500);
+    digitalWrite(STEP, LOW);
+    delayMicroseconds(500);
+  }
+}
+void fastClockwise() {
+  for (int i = 0; i < steps_per_rev; i++) {
+    digitalWrite(DIR2, HIGH);
+    digitalWrite(STEP2, HIGH);
+    delayMicroseconds(1500);
+    digitalWrite(STEP2, LOW);
+    delayMicroseconds(500);
+  }
+}
+void fastCounterClockwise() {
+  for (int i = 0; i < steps_per_rev; i++) {
+    digitalWrite(DIR2, LOW);
+    digitalWrite(STEP2, HIGH);
+    delayMicroseconds(1500);
+    digitalWrite(STEP2, LOW);
+    delayMicroseconds(500);
+  }
+}
+
+void loop() {
+  if (SerialBT.available()) {
+    val = SerialBT.read();
+    if (val == 'a') {
+      clockwise();
+    } else if (val == 'd') {
+      counterClockwise();
+    } else if(val =='q'){
+      fastClockwise();
+    }
+    else if (val =='e'){
+      fastCounterClockwise();
+    }
+    } else if (val == 's') {
+      digitalWrite(STEP, LOW);
+    }
+
+  
+   if (Serial.available()) {
+    val = Serial.read();
+    if (val == 'a') {
+      clockwise();
+    } else if (val == 'd') {
+      counterClockwise();
+    } else if(val =='q'){
+      fastClockwise();
+    }
+    else if (val =='e'){
+      fastCounterClockwise();
+    }
+    } else if (val == 's') {
+      digitalWrite(STEP, LOW);
+    }
+  }
